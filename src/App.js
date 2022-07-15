@@ -26,7 +26,7 @@ function App() {
     <>
       <Container className="my-4">
       <Stack direction="horizontal" className="mt-4 mb-4">
-      <h1 className=" me-auto">Budget Tracker</h1> 
+      <h1 className=" me-auto">Budget Tracker © </h1> 
       <CurrentDate />
       </Stack>
       
