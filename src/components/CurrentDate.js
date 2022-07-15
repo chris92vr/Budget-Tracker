@@ -19,7 +19,7 @@ export class CurrentDate extends Component {
  
   render(){
     return (
-      <div className="CurrentDate ml-auto text-dark border border-info rounded p-2">
+      <div className="CurrentDate text-dark border border-info rounded p-2 ">
         <p>Today is : {this.state.date}</p>
       </div>
     );

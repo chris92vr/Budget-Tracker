@@ -25,7 +25,11 @@ function App() {
   return (
     <>
       <Container className="my-4">
-      <h1 className="me-auto">Budget Tracker</h1>
+      <Stack direction="horizontal" className="mt-4 mb-4">
+      <h1 className=" me-auto">Budget Tracker</h1> 
+      <CurrentDate />
+      </Stack>
+      
         <Stack direction="horizontal" gap="2" className="mt-4 mb-4">
           
           <Button variant="primary" onClick={() => setShowAddBudgetModal(true)}>
@@ -34,7 +38,7 @@ function App() {
           <Button variant="outline-primary" onClick={openAddExpenseModal}>
             Add Expense
           </Button>
-          <CurrentDate className="ml-auto text-info border border-info" />
+          
         </Stack>
         <div
           style={{
