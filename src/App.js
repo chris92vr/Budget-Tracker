@@ -34,7 +34,7 @@ function App() {
           <Button variant="outline-primary" onClick={openAddExpenseModal}>
             Add Expense
           </Button>
-          <CurrentDate className="ml-auto" />
+          <CurrentDate className="ml-auto text-info border border-info" />
         </Stack>
         <div
           style={{
