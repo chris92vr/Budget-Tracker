@@ -1,3 +1,5 @@
+import cookie from 'cookie';
+
 export const currencyFormatter = new Intl.NumberFormat(undefined, {
     style: 'currency',
     currency: 'EUR',
@@ -29,5 +31,23 @@ export const currencyFormatter = new Intl.NumberFormat(undefined, {
         return 'danger';
     };
 
+export function isUserLoggedIn() {
+  const cookies = typeof window !== 'undefined' ? document.cookie : '';
+      const { token } = cookie.parse(cookies);
+  console.log('token isuserloggedIN: ', token);
+  console.log('cookies isuserloggedIN: ', cookies);
+  return token;
+};
 
-   
+export function redirectToLogin() {
+  if (typeof window !== 'undefined') {
+    window.location.href = '/login';
+  }
+};
+
+export function redirectToHome() {
+  if (typeof window !== 'undefined') {
+    window.location.href = '/';
+  }
+};
+
