@@ -3,9 +3,10 @@
 import Link from 'next/link';
 import styles from '@/styles/Header.module.css';
 import Button from 'react-bootstrap/Button';
-
+import LogoutButton from './LogoutButton';
 import { Navbar, Container, Nav, Col } from 'react-bootstrap';
 import { Row } from 'react-bootstrap';
+
 
 export default function Header() {
   return (
@@ -38,6 +39,9 @@ export default function Header() {
                     <p>Transactions</p>
                   </Link>
                 </Nav>
+              </Col>
+              <Col>
+                <LogoutButton />
               </Col>
             </Row>
           </Navbar.Collapse>
