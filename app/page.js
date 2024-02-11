@@ -3,23 +3,35 @@ import { useState, useEffect } from 'react';
 import cookie from 'cookie';
 import { Button } from 'react-bootstrap';
 import BudgetCard from '../components/BudgetCard';
-import { useRef } from 'react';
+import AddBudgetButton from '@/components/AddBudgetButton';
+import AddExpenseButton from '@/components/AddExpensesButton';
+import AddExpenseButtonById from '@/components/AddExpenseButtonById';
+import ViewExpenses from '@/components/ViewExpensesButton';
+
+
 
 export default function Home() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [budget, setBudget] = useState(null);
-   // calculate total amount
-   let totalAmount = 0;
-   let totalMax = 0;
+  const [showAddBudgetButton, setShowAddBudgetButton] = useState(false);
+  const [showAddExpenseButton, setShowAddExpenseButton] = useState(false);
+  const [showAddExpenseButtonById, setShowAddExpenseButtonById] = useState(false);
+  const [addExpenseButtonByBudgetId, setAddExpenseButtonByBudgetId] =
+  useState();
+  const [viewExpensesModalBudgetId, setViewExpensesModalBudgetId] = useState();
 
-    if (budget && Array.isArray(budget.data)) {
-      budget.data.forEach((item) => {
-        totalAmount += item.attributes.total;
-        totalMax += item.attributes.max;
-      });
-    }
-    
+
+  // calculate total amount
+  let totalAmount = 0;
+  let totalMax = 0;
+
+  if (budget && Array.isArray(budget.data)) {
+    budget.data.forEach((item) => {
+      totalAmount += item.attributes.total;
+      totalMax += item.attributes.max;
+    });
+  }
 
   useEffect(() => {
     const fetchData = async () => {
@@ -58,11 +70,7 @@ export default function Home() {
       const budgetData = await resBudget.json();
       console.log('budgetData: ', budgetData);
       setBudget(budgetData);
-
-    
-
-  
-    }
+    };
 
     fetchData();
   }, []);
@@ -86,7 +94,6 @@ export default function Home() {
         <h1>Home</h1>
         <p>Welcome {user.username}</p>
         <p>You have no budgets</p>
-        <Button href="/budgets/new">Create Budget</Button>
       </div>
     );
   } else {
@@ -94,7 +101,13 @@ export default function Home() {
       <div>
         <h1>Home</h1>
         <p>Welcome {user.username}</p>
-        <Button href="/budgets/new">Create Budget</Button>
+        <Button variant="primary" onClick={() => setShowAddBudgetButton(true)}>
+          Add Budget
+        </Button>
+        <Button variant="primary" onClick={() => setShowAddExpenseButton(true)}>
+          Add Expense
+        </Button>
+
         {budget &&
           Array.isArray(budget.data) &&
           budget.data.map((item) => (
@@ -103,23 +116,40 @@ export default function Home() {
               name={item.attributes.name}
               amount={item.attributes.total}
               max={item.attributes.max}
-              onAddExpenseClick={() => {
-                console.log('add expense clicked');
-              }}
+              onAddExpenseClick={() =>
+                setAddExpenseButtonByBudgetId(item.id)
+              }
               onViewExpensesClick={() => {
-                console.log('view expenses clicked');
+                setViewExpensesModalBudgetId(item.id);
               }}
               onDeleteClick={() => {
                 console.log('delete clicked');
               }}
             />
           ))}
-          <BudgetCard
-           name='Total'
-            amount={totalAmount}
-            max={totalMax}
-            gray
-            hideButtons
+        <BudgetCard
+          name="Total"
+          amount={totalAmount}
+          max={totalMax}
+          gray
+          hideButtons
+        />
+        <AddBudgetButton
+          show={showAddBudgetButton}
+          handleClose={() => setShowAddBudgetButton(false)}
+        />
+        <AddExpenseButton
+          show={showAddExpenseButton}
+          handleClose={() => setShowAddExpenseButton(false)}
+        />
+        <AddExpenseButtonById
+          budgetId={addExpenseButtonByBudgetId}
+          show={addExpenseButtonByBudgetId}
+          handleClose={() => setAddExpenseButtonByBudgetId(false)}
+        />
+        <ViewExpenses
+            budgetId={viewExpensesModalBudgetId}
+            handleClose={() => setViewExpensesModalBudgetId()}
           />
       </div>
     );
