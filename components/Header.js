@@ -7,7 +7,6 @@ import LogoutButton from './LogoutButton';
 import { Navbar, Container, Nav, Col } from 'react-bootstrap';
 import { Row } from 'react-bootstrap';
 
-
 export default function Header() {
   return (
     <header className={styles.header}>
@@ -45,9 +44,6 @@ export default function Header() {
               </Col>
             </Row>
           </Navbar.Collapse>
-          <Button variant="primary" href="/add-budget">
-            Add Budget
-          </Button>
         </Container>
       </Navbar>
     </header>
