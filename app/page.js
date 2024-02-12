@@ -1,14 +1,13 @@
 'use client';
 import { useState, useEffect } from 'react';
 import cookie from 'cookie';
-import { Button } from 'react-bootstrap';
+import { Button, Spinner, Modal } from 'react-bootstrap';
 import BudgetCard from '../components/BudgetCard';
 import AddBudgetButton from '@/components/AddBudgetButton';
 import AddExpenseButton from '@/components/AddExpensesButton';
 import AddExpenseButtonById from '@/components/AddExpenseButtonById';
 import ViewExpenses from '@/components/ViewExpensesButton';
-
-
+import { deleteBudget } from '@/components/ViewExpensesButton';
 
 export default function Home() {
   const [user, setUser] = useState(null);
@@ -16,11 +15,11 @@ export default function Home() {
   const [budget, setBudget] = useState(null);
   const [showAddBudgetButton, setShowAddBudgetButton] = useState(false);
   const [showAddExpenseButton, setShowAddExpenseButton] = useState(false);
-  const [showAddExpenseButtonById, setShowAddExpenseButtonById] = useState(false);
+  const [showAddExpenseButtonById, setShowAddExpenseButtonById] =
+    useState(false);
   const [addExpenseButtonByBudgetId, setAddExpenseButtonByBudgetId] =
-  useState();
+    useState();
   const [viewExpensesModalBudgetId, setViewExpensesModalBudgetId] = useState();
-
 
   // calculate total amount
   let totalAmount = 0;
@@ -34,10 +33,10 @@ export default function Home() {
   }
 
   useEffect(() => {
+    setLoading(true);
     const fetchData = async () => {
       const cookies = typeof window !== 'undefined' ? document.cookie : '';
       const { token } = cookie.parse(cookies);
-      console.log('token: ', token);
 
       if (!token) {
         if (typeof window !== 'undefined') {
@@ -53,10 +52,7 @@ export default function Home() {
         },
       });
 
-      console.log('res: ', res);
-
       const userData = await res.json();
-      console.log('userData: ', userData);
 
       setUser(userData);
       setLoading(false);
@@ -76,7 +72,14 @@ export default function Home() {
   }, []);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="overlay">
+      
+        <Spinner animation="border" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </Spinner>
+      </div>
+    );
   }
 
   if (!user) {
@@ -88,12 +91,23 @@ export default function Home() {
         <Button href="/register">Register</Button>
       </div>
     );
-  } else if (!budget) {
+  } else if (
+    !budget ||
+    !Array.isArray(budget.data) ||
+    budget.data.length === 0
+  ) {
     return (
       <div>
         <h1>Home</h1>
         <p>Welcome {user.username}</p>
         <p>You have no budgets</p>
+        <Button variant="primary" onClick={() => setShowAddBudgetButton(true)}>
+          Add Budget
+        </Button>
+        <AddBudgetButton
+          show={showAddBudgetButton}
+          handleClose={() => setShowAddBudgetButton(false)}
+        />
       </div>
     );
   } else {
@@ -116,14 +130,14 @@ export default function Home() {
               name={item.attributes.name}
               amount={item.attributes.total}
               max={item.attributes.max}
-              onAddExpenseClick={() =>
-                setAddExpenseButtonByBudgetId(item.id)
-              }
+              onAddExpenseClick={() => setAddExpenseButtonByBudgetId(item.id)}
               onViewExpensesClick={() => {
                 setViewExpensesModalBudgetId(item.id);
               }}
               onDeleteClick={() => {
-                console.log('delete clicked');
+                if (confirm('Are you sure you want to delete this budget?'))
+                
+                deleteBudget(item.id);
               }}
             />
           ))}
@@ -148,9 +162,9 @@ export default function Home() {
           handleClose={() => setAddExpenseButtonByBudgetId(false)}
         />
         <ViewExpenses
-            budgetId={viewExpensesModalBudgetId}
-            handleClose={() => setViewExpensesModalBudgetId()}
-          />
+          budgetId={viewExpensesModalBudgetId}
+          handleClose={() => setViewExpensesModalBudgetId()}
+        />
       </div>
     );
   }
