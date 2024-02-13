@@ -6,7 +6,7 @@ import { currencyFormatter, formatDate } from 'app/utils';
 async function deleteBudget(budgetId) {
   // First, fetch all expenses related to this budget
   const expensesResponse = await fetch(
-    'http://localhost:1337/api/expenses/?budget_id=' + budgetId,
+    `http://localhost:1337/api/expenses?filters[budget_id]=${budgetId}`,
     {
       method: 'GET',
     }
@@ -115,24 +115,27 @@ function ViewExpenses({ budgetId, handleClose }) {
   const [page, setPage] = useState(1); // Add a state for the current page
   const [currentPage, setCurrentPage] = useState(1); // Add a state for the current page
   const [totalPages, setTotalPages] = useState(0); // Add a state for the total number of pages
-
+  const [totalExpenses, setTotalExpenses] = useState(0);
+  const limit = 10;
   useEffect(() => {
     const fetchData = async () => {
       const limit = 10; // Number of records per page
       const start = (currentPage - 1) * limit; // Calculate the start index
       const total = await fetch(
-        `http://localhost:1337/api/expenses/count/view/${budgetId}`,
+        `http://localhost:1337/api/expenses/count/view?budget_id=${budgetId}`,
         {
           method: 'GET',
         }
       );
       const totalData = await total.json();
+      const totalExpenses = totalData;
+      setTotalExpenses(totalExpenses);
       const totalPages = Math.ceil(totalData / limit); // Calculate the total number of pages
       setTotalPages(totalPages); // Set the total number of pages
       const lastPage = currentPage === totalPages; // Check if it's the last page
 
       const response = await fetch(
-        `http://localhost:1337/api/expenses?budget_id=${budgetId}&pagination[start]=${start}&pagination[limit]=${limit}`,
+        `http://localhost:1337/api/expenses?filters[budget_id]=${budgetId}&pagination[start]=${start}&pagination[limit]=${limit}`,
         {
           method: 'GET',
         }
@@ -167,7 +170,7 @@ function ViewExpenses({ budgetId, handleClose }) {
         <Modal.Header closeButton>
           <Modal.Title>
             <Stack direction="horizontal" gap="2">
-              <div>Expenses </div>
+              <div>Expenses - Total element: {totalExpenses} </div>
 
               <Button
                 onClick={() => {
@@ -203,16 +206,16 @@ function ViewExpenses({ budgetId, handleClose }) {
                   </Stack>
                 ))
               : null}
-            {currentPage > 1 && (
-              <Button variant="primary" onClick={prevPage}>
-                Previous
-              </Button>
-            )}
-            {currentPage < totalPages && (
-              <Button variant="primary" onClick={nextPage}>
-                Next
-              </Button>
-            )}
+          {totalExpenses > limit && currentPage > 1 && (
+  <Button variant="primary" onClick={prevPage}>
+    Previous
+  </Button>
+)}
+{totalExpenses > limit && currentPage < totalPages && (
+  <Button variant="primary" onClick={nextPage}>
+    Next
+  </Button>
+)}
           </Stack>
         </Modal.Body>
       </Modal>
