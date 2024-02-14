@@ -1,6 +1,27 @@
-.footer{
-    background-color: #282c34;
-    color: white;
-    padding: 50px;
-    text-align: center;
+.footer {
+  background-color: #282c34;
+  color: white;
+  padding: 50px;
+  text-align: center;
+}
+
+.socials {
+  display: inline-block;
+  justify-content: center;
+
+  gap: 20px;
+  margin-top: 20px;
+  color: white !important;
+  padding: auto;
+  max-height: 3.5em;
+}
+
+.socials a {
+  display: inline-block;
+  width: 2rem;
+  height: 2rem;
+  margin: 0 25px;
+  color: white;
+  text-decoration: none;
+  font-size: 1.5em;
 }
