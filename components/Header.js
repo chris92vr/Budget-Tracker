@@ -2,10 +2,11 @@
 
 import Link from 'next/link';
 import styles from '@/styles/Header.module.css';
-import Button from 'react-bootstrap/Button';
 import LogoutButton from './LogoutButton';
-import { Navbar, Container, Nav, Col } from 'react-bootstrap';
-import { Row } from 'react-bootstrap';
+import { Navbar, Container, Nav } from 'react-bootstrap';
+import { isUserLoggedIn } from '../app/utils';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faUser, faSignInAlt, faUserPlus, faSignOut } from '@fortawesome/free-solid-svg-icons'
 
 export default function Header() {
   return (
@@ -17,32 +18,27 @@ export default function Header() {
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
-            <Row>
-              <Col>
-                <Nav>
-                  <Link href="/about">
-                    <p>About</p>
-                  </Link>
-                </Nav>
-              </Col>
-              <Col>
-                <Nav>
-                  <Link href="/budgets">
-                    <p>Budgets</p>
-                  </Link>
-                </Nav>
-              </Col>
-              <Col>
-                <Nav>
-                  <Link href="/transactions">
-                    <p>Transactions</p>
-                  </Link>
-                </Nav>
-              </Col>
-              <Col>
-                <LogoutButton />
-              </Col>
-            </Row>
+            <Nav className="me-auto">
+              <Link href="/user">
+                <FontAwesomeIcon icon={faUser} /> Profile
+              </Link>
+            </Nav>
+            <Nav>
+              { isUserLoggedIn() ? (
+                <LogoutButton>
+                  <FontAwesomeIcon icon={faSignOut} /> Logout
+                </LogoutButton>
+              ) : (
+                <>
+                <Link href="/login">
+                  <FontAwesomeIcon icon={faSignInAlt} /> Login
+                </Link>
+                <Link href="/register">
+                  <FontAwesomeIcon icon={faUserPlus} /> Register
+                </Link>
+                </>
+              )}
+            </Nav>
           </Navbar.Collapse>
         </Container>
       </Navbar>
