@@ -206,16 +206,16 @@ function ViewExpenses({ budgetId, handleClose }) {
                   </Stack>
                 ))
               : null}
-          {totalExpenses > limit && currentPage > 1 && (
-  <Button variant="primary" onClick={prevPage}>
-    Previous
-  </Button>
-)}
-{totalExpenses > limit && currentPage < totalPages && (
-  <Button variant="primary" onClick={nextPage}>
-    Next
-  </Button>
-)}
+            {totalExpenses > limit && currentPage > 1 && (
+              <Button variant="primary" onClick={prevPage}>
+                Previous
+              </Button>
+            )}
+            {totalExpenses > limit && currentPage < totalPages && (
+              <Button variant="primary" onClick={nextPage}>
+                Next
+              </Button>
+            )}
           </Stack>
         </Modal.Body>
       </Modal>
