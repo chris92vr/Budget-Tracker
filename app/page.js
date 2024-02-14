@@ -55,11 +55,15 @@ export default function Home() {
       const userData = await res.json();
 
       setUser(userData);
+      console.log('userData: ', userData);
       setLoading(false);
 
-      const resBudget = await fetch('http://localhost:1337/api/budgets', {
-        method: 'GET',
-      });
+      const resBudget = await fetch(
+        'http://localhost:1337/api/budgets?filters[user_id]=' + userData.id,
+        {
+          method: 'GET',
+        }
+      );
 
       console.log('resBudget: ', resBudget);
 
@@ -74,7 +78,6 @@ export default function Home() {
   if (loading) {
     return (
       <div className="overlay">
-      
         <Spinner animation="border" role="status">
           <span className="visually-hidden">Loading...</span>
         </Spinner>
@@ -136,8 +139,7 @@ export default function Home() {
               }}
               onDeleteClick={() => {
                 if (confirm('Are you sure you want to delete this budget?'))
-                
-                deleteBudget(item.id);
+                  deleteBudget(item.id);
               }}
             />
           ))}
