@@ -2,40 +2,50 @@
 
 import { Form, Modal, Button } from 'react-bootstrap';
 import { useState } from 'react';
+import cookie from 'cookie';
 
 export default function AddBudgetButton({ show, handleClose }) {
   const [name, setName] = useState('');
   const [max, setMax] = useState('');
+  const [user, setUser] = useState(null);
 
-  const submit = (e) => {
+  const submit = async (e) => {
     e.preventDefault();
 
-    const response = fetch('http://localhost:1337/api/budgets', {
+    const cookies = typeof window !== 'undefined' ? document.cookie : '';
+    const { token } = cookie.parse(cookies);
+
+    const res = await fetch('http://localhost:1337/api/users/me', {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const userData = await res.json();
+
+    setUser(userData);
+
+    const response = await fetch('http://localhost:1337/api/budgets', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         data: {
           name,
           max,
+          user_id: userData.id,
         },
       }),
     });
-    if (response != null) {
-      response
-        .then((res) => {
-          if (res.status === 200) {
-            res.json().then((data) => {
-              console.log(data);
-            });
-            window.location.reload(false);
-            handleClose();
-          } else {
-            console.log('status not 200', res.status);
-          }
-        })
-        .catch((err) => {
-          console.log('status not 200', err);
-        });
+
+    if (response.ok) {
+      // Check if response status was 200
+      const data = await response.json();
+      console.log(data);
+      window.location.reload(false);
+      handleClose();
+    } else {
+      console.log('status not 200', response.status);
     }
   };
 
