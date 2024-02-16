@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import cookie from 'cookie';
-import { Button, Spinner, Modal } from 'react-bootstrap';
+import { Button, Spinner, Modal, Stack, Container } from 'react-bootstrap';
 import BudgetCard from '../components/BudgetCard';
 import AddBudgetButton from '@/components/AddBudgetButton';
 import AddExpenseButton from '@/components/AddExpensesButton';
@@ -85,71 +85,80 @@ export default function Home() {
     );
   }
 
-  if (!user) {
+  if (!budget || !Array.isArray(budget.data) || budget.data.length === 0) {
     return (
-      <div>
-        <h1>Home</h1>
-        <p>You are not logged in</p>
-        <Button href="/login">Login</Button>
-        <Button href="/register">Register</Button>
-      </div>
-    );
-  } else if (
-    !budget ||
-    !Array.isArray(budget.data) ||
-    budget.data.length === 0
-  ) {
-    return (
-      <div>
-        <h1>Home</h1>
-        <p>Welcome {user.username}</p>
-        <p>You have no budgets</p>
-        <Button variant="primary" onClick={() => setShowAddBudgetButton(true)}>
-          Add Budget
-        </Button>
-        <AddBudgetButton
-          show={showAddBudgetButton}
-          handleClose={() => setShowAddBudgetButton(false)}
-        />
-      </div>
+      <Container className="my-4">
+        <Stack direction="horizontal" className="mt-4 mb-4">
+          <h1 className=" me-auto">Budget Tracker © </h1>
+        </Stack>
+
+        <Stack direction="horizontal" gap="2" className="mt-4 mb-4">
+          <Button
+            variant="primary"
+            onClick={() => setShowAddBudgetButton(true)}
+          >
+            Add Budget
+          </Button>
+          <h3 className=" me-auto">
+            No Budgets Yet. Add a Budget to get started.
+          </h3>
+        </Stack>
+      </Container>
     );
   } else {
     return (
-      <div>
-        <h1>Home</h1>
-        <p>Welcome {user.username}</p>
-        <Button variant="primary" onClick={() => setShowAddBudgetButton(true)}>
-          Add Budget
-        </Button>
-        <Button variant="primary" onClick={() => setShowAddExpenseButton(true)}>
-          Add Expense
-        </Button>
+      <Container className="my-4">
+        <Stack direction="horizontal" className="mt-4 mb-4">
+          <h1 className=" me-auto">Budget Tracker © </h1>
+        </Stack>
 
-        {budget &&
-          Array.isArray(budget.data) &&
-          budget.data.map((item) => (
-            <BudgetCard
-              key={item.id}
-              name={item.attributes.name}
-              amount={item.attributes.total}
-              max={item.attributes.max}
-              onAddExpenseClick={() => setAddExpenseButtonByBudgetId(item.id)}
-              onViewExpensesClick={() => {
-                setViewExpensesModalBudgetId(item.id);
-              }}
-              onDeleteClick={() => {
-                if (confirm('Are you sure you want to delete this budget?'))
-                  deleteBudget(item.id);
-              }}
-            />
-          ))}
-        <BudgetCard
-          name="Total"
-          amount={totalAmount}
-          max={totalMax}
-          gray
-          hideButtons
-        />
+        <Stack direction="horizontal" gap="2" className="mt-4 mb-4">
+          <Button
+            variant="primary"
+            onClick={() => setShowAddBudgetButton(true)}
+          >
+            Add Budget
+          </Button>
+          <Button
+            variant="primary"
+            onClick={() => setShowAddExpenseButton(true)}
+          >
+            Add Expense
+          </Button>
+        </Stack>
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
+            gap: '2.5rem',
+          }}
+        >
+          {budget &&
+            Array.isArray(budget.data) &&
+            budget.data.map((item) => (
+              <BudgetCard
+                key={item.id}
+                name={item.attributes.name}
+                amount={item.attributes.total}
+                max={item.attributes.max}
+                onAddExpenseClick={() => setAddExpenseButtonByBudgetId(item.id)}
+                onViewExpensesClick={() => {
+                  setViewExpensesModalBudgetId(item.id);
+                }}
+                onDeleteClick={() => {
+                  if (confirm('Are you sure you want to delete this budget?'))
+                    deleteBudget(item.id);
+                }}
+              />
+            ))}
+          <BudgetCard
+            name="Total"
+            amount={totalAmount}
+            max={totalMax}
+            gray
+            hideButtons
+          />
+        </div>
         <AddBudgetButton
           show={showAddBudgetButton}
           handleClose={() => setShowAddBudgetButton(false)}
@@ -167,7 +176,7 @@ export default function Home() {
           budgetId={viewExpensesModalBudgetId}
           handleClose={() => setViewExpensesModalBudgetId()}
         />
-      </div>
+      </Container>
     );
   }
 }
