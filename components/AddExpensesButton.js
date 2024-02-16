@@ -2,7 +2,7 @@
 
 import { Form, Modal, Button } from 'react-bootstrap';
 import { useState, useEffect } from 'react';
-
+import { getToken } from 'app/utils';
 export default function AddExpenseButton({
   show,
   handleClose,
@@ -12,50 +12,55 @@ export default function AddExpenseButton({
   const [amount, setAmount] = useState('');
   const [budget_id, setBudget_id] = useState('');
   const [budgets, setBudgets] = useState([]);
+  const [userData, setUserData] = useState([]);
+  const token = getToken();
 
   const submit = async (e) => {
     e.preventDefault();
-  
-    const response = await fetch(
-      'http://localhost:1337/api/expenses',
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            data: {
-                description,
-                amount,
-                budget_id,
-            },
-        }),
-      }
-    );
-  
+
+    const response = await fetch('http://localhost:1337/api/expenses', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        data: {
+          description,
+          amount,
+          budget_id,
+        },
+      }),
+    });
+
     if (response.ok) {
       const data = await response.json();
       console.log('data: ', data);
-  
+
       // Fetch the current budget
-      const budgetResponse = await fetch(`http://localhost:1337/api/budgets/${budget_id}`, {
-        method: 'GET',
-      });
-  
+      const budgetResponse = await fetch(
+        `http://localhost:1337/api/budgets/${budget_id}`,
+        {
+          method: 'GET',
+        }
+      );
+
       if (budgetResponse.ok) {
         const budgetData = await budgetResponse.json();
         const currentTotal = budgetData.data.attributes.total;
         console.log('currentTotal: ', currentTotal);
-  
+
         // Update the budget total
-        const updateResponse = await fetch(`http://localhost:1337/api/budgets/${budget_id}`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            data: {
-              total: currentTotal + parseFloat(amount), // Assuming 'total' is a number
-            },
-          }),
-        });
-  
+        const updateResponse = await fetch(
+          `http://localhost:1337/api/budgets/${budget_id}`,
+          {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              data: {
+                total: currentTotal + parseFloat(amount), // Assuming 'total' is a number
+              },
+            }),
+          }
+        );
+
         if (updateResponse.ok) {
           console.log('Budget updated successfully');
         } else {
@@ -64,8 +69,8 @@ export default function AddExpenseButton({
       } else {
         console.log('Failed to fetch budget');
       }
-  
-     window.location.reload(false);
+
+      window.location.reload(false);
       handleClose();
     } else {
       console.log('Failed to create expense');
@@ -75,19 +80,30 @@ export default function AddExpenseButton({
   useEffect(() => {
     // declare the async data fetching function
     const fetchData = async () => {
-      // get the data from the api
-      const resBudget = await fetch('http://localhost:1337/api/budgets', {
+      const res = await fetch('http://localhost:1337/api/users/me', {
         method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
 
-     
+      const userData = await res.json();
+      setUserData(userData);
+      console.log('userData: ', userData);
+
+      // get the data from the api
+      const resBudget = await fetch(
+        'http://localhost:1337/api/budgets?filters[user_id]=' + userData.id,
+        {
+          method: 'GET',
+        }
+      );
 
       const budgetData = await resBudget.json();
-    
+
       setBudgets(budgetData.data);
     };
-      // set state with the result
-   
+    // set state with the result
 
     // call the async function
     fetchData();
