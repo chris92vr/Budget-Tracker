@@ -14,7 +14,8 @@ export default function Layout({ title, keywords, description, children }) {
       </Head>
       <body>
         <Header />
-        {children}
+        <d className="container content">{children}</d>
+
         <Footer />
       </body>
     </html>
