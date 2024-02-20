@@ -8,8 +8,10 @@ import AddExpenseButton from '@/components/AddExpensesButton';
 import AddExpenseButtonById from '@/components/AddExpenseButtonById';
 import ViewExpenses from '@/components/ViewExpensesButton';
 import { deleteBudget } from '@/components/ViewExpensesButton';
+import CurrentDate from '@/components/CurrentDate';
 
 export default function Home() {
+  console.log('API_URL: ', process.env.NEXT_PUBLIC_API_URL);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [budget, setBudget] = useState(null);
@@ -45,12 +47,20 @@ export default function Home() {
         return;
       }
 
-      const res = await fetch('http://localhost:1337/api/users/me', {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const res = await fetch(
+        process.env.NEXT_PUBLIC_API_URL + 'api/users/me',
+        {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!res.ok) {
+        console.error('API request failed with status ' + res.status);
+        return;
+      }
 
       const userData = await res.json();
 
@@ -59,7 +69,9 @@ export default function Home() {
       setLoading(false);
 
       const resBudget = await fetch(
-        'http://localhost:1337/api/budgets?filters[user_id]=' + userData.id,
+        process.env.NEXT_PUBLIC_API_URL +
+          'api/budgets?filters[user_id]=' +
+          userData.id,
         {
           method: 'GET',
         }
@@ -90,6 +102,7 @@ export default function Home() {
       <Container className="my-4">
         <Stack direction="horizontal" className="mt-4 mb-4">
           <h1 className=" me-auto">Budget Tracker © </h1>
+          <CurrentDate />
         </Stack>
 
         <Stack direction="horizontal" gap="2" className="mt-4 mb-4">
@@ -99,10 +112,15 @@ export default function Home() {
           >
             Add Budget
           </Button>
+
           <h3 className=" me-auto">
             No Budgets Yet. Add a Budget to get started.
           </h3>
         </Stack>
+        <AddBudgetButton
+          show={showAddBudgetButton}
+          handleClose={() => setShowAddBudgetButton(false)}
+        />
       </Container>
     );
   } else {
@@ -110,6 +128,7 @@ export default function Home() {
       <Container className="my-4">
         <Stack direction="horizontal" className="mt-4 mb-4">
           <h1 className=" me-auto">Budget Tracker © </h1>
+          <CurrentDate />
         </Stack>
 
         <Stack direction="horizontal" gap="2" className="mt-4 mb-4">
