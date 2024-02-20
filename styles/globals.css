@@ -31,6 +31,13 @@ a {
   z-index: 100;
 }
 
+.form-signin {
+  width: 100%;
+  max-width: 28rem;
+  padding: 1rem;
+  margin: auto;
+}
+
 @media (prefers-color-scheme: light) {
   html {
     color-scheme: light dark;
