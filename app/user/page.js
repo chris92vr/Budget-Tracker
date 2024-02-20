@@ -1,7 +1,7 @@
-"use client";
+'use client';
 import { useState, useEffect } from 'react';
 import cookie from 'cookie';
-
+import { Container } from 'react-bootstrap';
 
 export default function YourPage() {
   const [user, setUser] = useState(null);
@@ -19,13 +19,15 @@ export default function YourPage() {
         return;
       }
 
- 
-      const res = await fetch('http://localhost:1337/api/users/me', {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const res = await fetch(
+        process.env.NEXT_PUBLIC_API_URL + 'api/users/me',
+        {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       console.log('res: ', res);
 
@@ -43,10 +45,13 @@ export default function YourPage() {
   }
 
   return (
-    <div>
-      <h1>User Profile</h1>
+    <Container className="mt-5 text-center">
+      <h1>Your Page</h1>
       <p>Username: {user.username}</p>
       <p>Email: {user.email}</p>
-    </div>
+      <p>
+        Date is created: {new Date(user.createdAt).toLocaleDateString('en-GB')}
+      </p>
+    </Container>
   );
 }

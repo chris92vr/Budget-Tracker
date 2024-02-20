@@ -1,9 +1,10 @@
 'use client';
 
 import { useState } from 'react';
+import API_URL from '../../.env';
 
 export default function RegisterPage() {
-    const [username, setUsername] = useState('');
+  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -16,30 +17,24 @@ export default function RegisterPage() {
       return;
     }
 
-    const response = fetch(
-      'http://localhost:1337/api/auth/local/register',
-        {
-            method: 'POST',
-            headers: {
-            'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-            username,
-            email,
-            password,
-            }),
-        }
-
-      
-    );
+    const response = fetch(API_URL + 'api/auth/local/register', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        username,
+        email,
+        password,
+      }),
+    });
     response
       .then((res) => {
         console.log('response status: ' + res.status);
         if (res.status === 200) {
-            alert('Registration successful');
-            //redirect to login page
-            window.location.href = '/login';
-          
+          alert('Registration successful');
+          //redirect to login page
+          window.location.href = '/login';
         } else {
           console.log('response status: ' + res.status);
           alert('Username or email already exists');
@@ -61,7 +56,7 @@ export default function RegisterPage() {
           <label htmlFor="username">Username</label>
           <input
             type="text"
-            className="form-control"
+            className="form-control mb-2"
             id="username"
             placeholder="Enter username"
             value={username}
@@ -72,7 +67,7 @@ export default function RegisterPage() {
           <label htmlFor="email">Email address</label>
           <input
             type="email"
-            className="form-control"
+            className="form-control mb-2"
             id="email"
             placeholder="Enter email"
             value={email}
@@ -83,7 +78,7 @@ export default function RegisterPage() {
           <label htmlFor="password">Password</label>
           <input
             type="password"
-            className="form-control"
+            className="form-control mb-2"
             id="password"
             placeholder="Password"
             value={password}
@@ -94,7 +89,7 @@ export default function RegisterPage() {
           <label htmlFor="confirmPassword">Confirm Password</label>
           <input
             type="password"
-            className="form-control"
+            className="form-control mb-3"
             id="confirmPassword"
             placeholder="Confirm Password"
             value={confirmPassword}
@@ -107,10 +102,7 @@ export default function RegisterPage() {
       </form>
     </div>
   );
-};
-
-
+}
 
 // The RegisterPage component is a form that allows users to register. It uses the useState hook to manage the form state and the fetch API to send a POST request to the Strapi API. The getServerSideProps function is used to ensure that the page is pre-rendered on the server.
-// 
-
+//
