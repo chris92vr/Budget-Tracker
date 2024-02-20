@@ -18,7 +18,7 @@ export default function AddExpenseButton({
   const submit = async (e) => {
     e.preventDefault();
 
-    const response = await fetch('http://localhost:1337/api/expenses', {
+    const response = await fetch(process.env.NEXT_PUBLIC_API_URL + 'api/expenses', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -36,7 +36,7 @@ export default function AddExpenseButton({
 
       // Fetch the current budget
       const budgetResponse = await fetch(
-        `http://localhost:1337/api/budgets/${budget_id}`,
+        process.env.NEXT_PUBLIC_API_URL + `api/budgets/${budget_id}`,
         {
           method: 'GET',
         }
@@ -49,7 +49,7 @@ export default function AddExpenseButton({
 
         // Update the budget total
         const updateResponse = await fetch(
-          `http://localhost:1337/api/budgets/${budget_id}`,
+          process.env.NEXT_PUBLIC_API_URL + `api/budgets/${budget_id}`,
           {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
@@ -80,7 +80,7 @@ export default function AddExpenseButton({
   useEffect(() => {
     // declare the async data fetching function
     const fetchData = async () => {
-      const res = await fetch('http://localhost:1337/api/users/me', {
+      const res = await fetch(process.env.NEXT_PUBLIC_API_URL + 'api/users/me', {
         method: 'GET',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -93,7 +93,7 @@ export default function AddExpenseButton({
 
       // get the data from the api
       const resBudget = await fetch(
-        'http://localhost:1337/api/budgets?filters[user_id]=' + userData.id,
+        process.env.NEXT_PUBLIC_API_URL + 'api/budgets?filters[user_id]=' + userData.id,
         {
           method: 'GET',
         }

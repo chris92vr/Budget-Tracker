@@ -13,7 +13,7 @@ export default function AddExpenseButtonById({ handleClose, budgetId }) {
     const fetchData = async () => {
       // get the data from the api
       const user = await fetch(
-        'http://localhost:1337/api/budgets/' + budgetId,
+        process.env.NEXT_PUBLIC_API_URL + 'api/budgets/' + budgetId,
         {
           method: 'GET',
           headers: {
@@ -35,7 +35,7 @@ export default function AddExpenseButtonById({ handleClose, budgetId }) {
     e.preventDefault();
     console.log('budasddfsaf', budgetId);
 
-    const response = await fetch('http://localhost:1337/api/expenses', {
+    const response = await fetch(process.env.NEXT_PUBLIC_API_URL + 'api/expenses', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -50,7 +50,7 @@ export default function AddExpenseButtonById({ handleClose, budgetId }) {
     if (response.ok) {
       // Fetch the current budget
       const budgetResponse = await fetch(
-        `http://localhost:1337/api/budgets/${budgetId}`,
+        process.env.NEXT_PUBLIC_API_URL + `api/budgets/${budgetId}`,
         {
           method: 'GET',
         }
@@ -64,7 +64,7 @@ export default function AddExpenseButtonById({ handleClose, budgetId }) {
 
         // Update the budget total
         const updateResponse = await fetch(
-          `http://localhost:1337/api/budgets/${budgetId}`,
+          process.env.NEXT_PUBLIC_API_URL + `api/budgets/${budgetId}`,
           {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },

@@ -5,8 +5,13 @@ import styles from '@/styles/Header.module.css';
 import LogoutButton from './LogoutButton';
 import { Navbar, Container, Nav } from 'react-bootstrap';
 import { isUserLoggedIn } from '../app/utils';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faUser, faSignInAlt, faUserPlus, faSignOut } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faUser,
+  faSignInAlt,
+  faUserPlus,
+  faSignOut,
+} from '@fortawesome/free-solid-svg-icons';
 
 export default function Header() {
   return (
@@ -24,18 +29,22 @@ export default function Header() {
               </Link>
             </Nav>
             <Nav>
-              { isUserLoggedIn() ? (
-                <LogoutButton>
-                  <FontAwesomeIcon icon={faSignOut} /> Logout
-                </LogoutButton>
+              {isUserLoggedIn() ? (
+                <Nav.Item>
+                  <LogoutButton>
+                    <FontAwesomeIcon icon={faSignOut} /> Logout
+                  </LogoutButton>
+                </Nav.Item>
               ) : (
                 <>
-                <Link href="/login">
-                  <FontAwesomeIcon icon={faSignInAlt} /> Login
-                </Link>
-                <Link href="/register">
-                  <FontAwesomeIcon icon={faUserPlus} /> Register
-                </Link>
+                  <Nav.Item>
+                    <Link href="/login">
+                      <FontAwesomeIcon icon={faSignInAlt} /> Login
+                    </Link>
+                    <Link href="/register">
+                      <FontAwesomeIcon icon={faUserPlus} /> Register
+                    </Link>
+                  </Nav.Item>
                 </>
               )}
             </Nav>

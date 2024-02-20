@@ -6,7 +6,8 @@ import { currencyFormatter, formatDate } from 'app/utils';
 async function deleteBudget(budgetId) {
   // First, fetch all expenses related to this budget
   const expensesResponse = await fetch(
-    `http://localhost:1337/api/expenses?filters[budget_id]=${budgetId}`,
+    process.env.NEXT_PUBLIC_API_URL +
+      `api/expenses?filters[budget_id]=${budgetId}`,
     {
       method: 'GET',
     }
@@ -22,7 +23,7 @@ async function deleteBudget(budgetId) {
   // Delete each expense related to this budget
   for (let expense of expensesData.data) {
     const deleteExpenseResponse = await fetch(
-      'http://localhost:1337/api/expenses/' + expense.id,
+      process.env.NEXT_PUBLIC_API_URL + 'api/expenses/' + expense.id,
       {
         method: 'DELETE',
       }
@@ -36,7 +37,7 @@ async function deleteBudget(budgetId) {
 
   // Then, delete the budget
   const response = await fetch(
-    'http://localhost:1337/api/budgets/' + budgetId,
+    process.env.NEXT_PUBLIC_API_URL + 'api/budgets/' + budgetId,
     {
       method: 'DELETE',
     }
@@ -53,7 +54,7 @@ async function deleteBudget(budgetId) {
 
 async function deleteExpense(expenseId, budgetId) {
   const response = await fetch(
-    'http://localhost:1337/api/expenses/' + expenseId,
+    process.env.NEXT_PUBLIC_API_URL + 'api/expenses/' + expenseId,
     {
       method: 'DELETE',
       body: JSON.stringify({
@@ -71,7 +72,7 @@ async function deleteExpense(expenseId, budgetId) {
   const amount = parseFloat(expenseData.data.attributes.amount);
 
   const budgetResponse = await fetch(
-    `http://localhost:1337/api/budgets/${budgetId}`,
+    process.env.NEXT_PUBLIC_API_URL + `api/budgets/${budgetId}`,
     { method: 'GET' }
   );
 
@@ -89,7 +90,7 @@ async function deleteExpense(expenseId, budgetId) {
   console.log('total: ', total);
 
   const updateResponse = await fetch(
-    `http://localhost:1337/api/budgets/${budgetId}`,
+    process.env.NEXT_PUBLIC_API_URL + `api/budgets/${budgetId}`,
     {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
@@ -122,7 +123,8 @@ function ViewExpenses({ budgetId, handleClose }) {
       const limit = 10; // Number of records per page
       const start = (currentPage - 1) * limit; // Calculate the start index
       const total = await fetch(
-        `http://localhost:1337/api/expenses/count/view?budget_id=${budgetId}`,
+        process.env.NEXT_PUBLIC_API_URL +
+          `api/expenses/count/view?budget_id=${budgetId}`,
         {
           method: 'GET',
         }
@@ -135,7 +137,8 @@ function ViewExpenses({ budgetId, handleClose }) {
       const lastPage = currentPage === totalPages; // Check if it's the last page
 
       const response = await fetch(
-        `http://localhost:1337/api/expenses?filters[budget_id]=${budgetId}&pagination[start]=${start}&pagination[limit]=${limit}`,
+        process.env.NEXT_PUBLIC_API_URL +
+          `api/expenses?filters[budget_id]=${budgetId}&pagination[start]=${start}&pagination[limit]=${limit}`,
         {
           method: 'GET',
         }

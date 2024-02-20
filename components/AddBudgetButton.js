@@ -15,7 +15,7 @@ export default function AddBudgetButton({ show, handleClose }) {
     const cookies = typeof window !== 'undefined' ? document.cookie : '';
     const { token } = cookie.parse(cookies);
 
-    const res = await fetch('http://localhost:1337/api/users/me', {
+    const res = await fetch(process.env.NEXT_PUBLIC_API_URL + 'api/users/me', {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${token}`,
@@ -26,7 +26,7 @@ export default function AddBudgetButton({ show, handleClose }) {
 
     setUser(userData);
 
-    const response = await fetch('http://localhost:1337/api/budgets', {
+    const response = await fetch(process.env.NEXT_PUBLIC_API_URL + 'api/budgets', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
